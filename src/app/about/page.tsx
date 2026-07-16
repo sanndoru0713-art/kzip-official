@@ -3,8 +3,12 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Parallax from "@/components/Parallax";
 import PlaceholderImage from "@/components/PlaceholderImage";
+import CmsImage from "@/components/CmsImage";
 import CTABand from "@/components/CTABand";
 import { site } from "@/data/site";
+import { getCeoProfile, getSiteInfo } from "@/lib/notion/queries";
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "회사소개",
@@ -71,13 +75,14 @@ const collaboration = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [siteInfo, profile] = await Promise.all([getSiteInfo(), getCeoProfile()]);
   return (
     <>
       <PageHero
         overline="About"
         titleLines={["시장과 브랜드 사이,", "K:ZIP가 연결합니다"]}
-        description={site.description}
+        description={siteInfo.description}
       />
 
       {/* 오피스 이미지 밴드 — 풀 블리드 */}
@@ -185,7 +190,9 @@ export default function AboutPage() {
       <section className="border-b border-line bg-paper-deep/50">
         <div className="container-k grid gap-14 py-24 md:py-36 lg:grid-cols-12">
           <Reveal className="reveal-img lg:col-span-5">
-            <PlaceholderImage
+            <CmsImage
+              src={profile?.imageUrl}
+              alt={`대표 ${profile?.name ?? siteInfo.ceo} 프로필`}
               kind="office"
               figure="PORTRAIT"
               label="대표 프로필 사진 교체 필요"
@@ -198,14 +205,31 @@ export default function AboutPage() {
                 <span className="text-accent">04</span> Leadership
               </p>
               <h2 className="display-2 mt-6">
-                대표 {site.ceo}
+                {profile?.role ?? "대표"} {profile?.name ?? siteInfo.ceo}
               </h2>
-              <div className="mt-9 border-l-2 border-accent bg-paper px-7 py-8 text-[15px] leading-relaxed text-ink-mute">
-                [대표 프로필 입력 필요]
-                <br />
-                경력, 전문 분야, 대표 프로젝트 경험 등 공개 가능한 프로필을
-                입력하세요.
-              </div>
+              {profile && (profile.intro || profile.career || profile.education) ? (
+                <div className="mt-9 space-y-5 border-l-2 border-accent bg-paper px-7 py-8 text-[15px] leading-[1.85] text-ink-soft">
+                  {profile.intro && <p>{profile.intro}</p>}
+                  {profile.career && (
+                    <p className="whitespace-pre-line">{profile.career}</p>
+                  )}
+                  {profile.education && (
+                    <p className="whitespace-pre-line">{profile.education}</p>
+                  )}
+                  {profile.expertise.length > 0 && (
+                    <p className="text-[13px] text-ink-mute">
+                      {profile.expertise.join(" · ")}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="mt-9 border-l-2 border-accent bg-paper px-7 py-8 text-[15px] leading-relaxed text-ink-mute">
+                  [대표 프로필 입력 필요]
+                  <br />
+                  경력, 전문 분야, 대표 프로젝트 경험 등 공개 가능한 프로필을
+                  입력하세요.
+                </div>
+              )}
             </Reveal>
           </div>
         </div>
@@ -333,11 +357,11 @@ export default function AboutPage() {
             <dl className="mt-8 divide-y divide-line border-y border-line text-[15px]">
               {[
                 ["회사명", site.name],
-                ["대표자", site.ceo],
-                ["이메일", site.contact.email],
-                ["전화", site.contact.phone],
-                ["주소", site.contact.address],
-                ["사업자등록번호", site.contact.businessNumber],
+                ["대표자", siteInfo.ceo],
+                ["이메일", siteInfo.email],
+                ["전화", siteInfo.phone],
+                ["주소", siteInfo.address],
+                ["사업자등록번호", siteInfo.businessNumber],
               ].map(([label, value]) => (
                 <div key={label} className="grid grid-cols-[140px_1fr] gap-4 py-4">
                   <dt className="font-medium text-ink-mute">{label}</dt>

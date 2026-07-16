@@ -4,11 +4,14 @@ import Parallax from "@/components/Parallax";
 import SectionHeading from "@/components/SectionHeading";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import CTABand from "@/components/CTABand";
+import CmsImage from "@/components/CmsImage";
 import GlobalTimeline from "@/components/home/GlobalTimeline";
 import ProcessSteps from "@/components/home/ProcessSteps";
 import { homeServices } from "@/data/services";
-import { projects } from "@/data/projects";
-import { insights } from "@/data/insights";
+import { getInsights, getProjects, getSiteInfo } from "@/lib/notion/queries";
+
+// Notion CMS 수정 사항이 최대 5분 내 반영되도록 ISR 적용
+export const revalidate = 300;
 
 const globalCapabilities = [
   "일본 시장 및 고객 분석",
@@ -36,7 +39,12 @@ const serviceGridLayout = [
   { span: "md:col-span-2 lg:col-span-4", offset: "lg:mt-32", image: null },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [projects, insights, siteInfo] = await Promise.all([
+    getProjects(),
+    getInsights(),
+    getSiteInfo(),
+  ]);
   const [featuredProject, ...restProjects] = projects;
 
   return (
@@ -51,18 +59,16 @@ export default function HomePage() {
                 Strategy-driven Marketing Company
               </p>
               <h1 className="display-1 mt-9">
-                <span className="mask-line">
-                  <span>전략을 설계하고,</span>
-                </span>
-                <span className="mask-line">
-                  <span>성장을 실행합니다.</span>
-                </span>
+                {siteInfo.mainCopyLines.map((line) => (
+                  <span key={line} className="mask-line">
+                    <span>{line}</span>
+                  </span>
+                ))}
               </h1>
             </Reveal>
             <Reveal delay={250}>
               <p className="mt-9 max-w-lg text-[17px] leading-[1.8] text-ink-soft md:text-lg">
-                K:ZIP는 전략, 콘텐츠, 디지털 채널, 데이터와 글로벌 시장을
-                연결해 브랜드와 조직의 지속 가능한 성장 구조를 만듭니다.
+                {siteInfo.subCopy}
               </p>
               <div className="mt-11 flex flex-wrap items-center gap-4">
                 <Link
@@ -241,7 +247,9 @@ export default function HomePage() {
                 href={`/projects/${featuredProject.slug}`}
                 className="group hover-zoom block bg-paper"
               >
-                <PlaceholderImage
+                <CmsImage
+                  src={featuredProject.imageUrl}
+                  alt={featuredProject.title}
                   kind="global"
                   figure="CASE.01"
                   ratio="aspect-[16/9] md:aspect-[21/9]"
@@ -255,7 +263,7 @@ export default function HomePage() {
                       {featuredProject.title}
                     </h3>
                     <p className="mt-3 text-[13px] text-ink-mute">
-                      [공개 가능한 성과 입력 필요]
+                      {featuredProject.results || "[공개 가능한 성과 입력 필요]"}
                     </p>
                   </div>
                   <span
@@ -278,7 +286,9 @@ export default function HomePage() {
                   className="group hover-zoom block"
                 >
                   <div className="overflow-hidden">
-                    <PlaceholderImage
+                    <CmsImage
+                      src={project.imageUrl}
+                      alt={project.title}
                       kind={(["office", "meeting", "strategy"] as const)[i % 3]}
                       figure={`CASE.0${i + 2}`}
                       ratio="aspect-[4/3]"
@@ -297,7 +307,7 @@ export default function HomePage() {
                       {project.title}
                     </h3>
                     <p className="mt-2.5 text-[13px] text-ink-mute">
-                      [공개 가능한 성과 입력 필요]
+                      {project.results || "[공개 가능한 성과 입력 필요]"}
                     </p>
                   </div>
                 </Link>

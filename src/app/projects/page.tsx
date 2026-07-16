@@ -3,9 +3,12 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Parallax from "@/components/Parallax";
-import PlaceholderImage, { type PlaceholderKind } from "@/components/PlaceholderImage";
+import { type PlaceholderKind } from "@/components/PlaceholderImage";
+import CmsImage from "@/components/CmsImage";
 import CTABand from "@/components/CTABand";
-import { projects } from "@/data/projects";
+import { getProjects } from "@/lib/notion/queries";
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "프로젝트",
@@ -15,7 +18,8 @@ export const metadata: Metadata = {
 
 const caseKinds: PlaceholderKind[] = ["global", "strategy", "meeting", "office"];
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getProjects();
   const [featured, ...rest] = projects;
 
   return (
@@ -33,7 +37,9 @@ export default function ProjectsPage() {
             <Reveal className="reveal-img">
               <Link href={`/projects/${featured.slug}`} className="group hover-zoom block">
                 <Parallax speed={0.05}>
-                  <PlaceholderImage
+                  <CmsImage
+                    src={featured.imageUrl}
+                    alt={featured.title}
                     kind="global"
                     figure="CASE.01"
                     ratio="aspect-[16/9] md:aspect-[21/9]"
@@ -49,7 +55,7 @@ export default function ProjectsPage() {
                       {featured.summary}
                     </p>
                     <p className="mt-3 text-[13px] text-ink-mute">
-                      [공개 가능한 성과 입력 필요]
+                      {featured.results || "[공개 가능한 성과 입력 필요]"}
                     </p>
                   </div>
                   <span
@@ -78,7 +84,9 @@ export default function ProjectsPage() {
                         reversed ? "lg:order-2 lg:col-start-6" : ""
                       }`}
                     >
-                      <PlaceholderImage
+                      <CmsImage
+                        src={project.imageUrl}
+                        alt={project.title}
                         kind={caseKinds[(i + 1) % caseKinds.length]}
                         figure={`CASE.0${i + 2}`}
                         ratio="aspect-[16/10]"
@@ -104,7 +112,7 @@ export default function ProjectsPage() {
                         {project.summary}
                       </p>
                       <p className="mt-4 text-[13px] text-ink-mute">
-                        [공개 가능한 성과 입력 필요]
+                        {project.results || "[공개 가능한 성과 입력 필요]"}
                       </p>
                       <span className="link-slide mt-7 inline-block text-[15px] font-semibold">
                         케이스 보기 →

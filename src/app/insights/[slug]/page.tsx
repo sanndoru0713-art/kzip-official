@@ -3,17 +3,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import CTABand from "@/components/CTABand";
-import { getInsight, insights } from "@/data/insights";
+import { insights as localInsights } from "@/data/insights";
+import { getInsightBody, getInsightBySlug, getInsights } from "@/lib/notion/queries";
+
+export const revalidate = 300;
 
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return insights.map((post) => ({ slug: post.slug }));
+  // 빌드 시에는 로컬 slug 기준으로 생성 — CMS에서 추가된 slug는 요청 시 렌더링됩니다.
+  return localInsights.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getInsight(slug);
+  const post = await getInsightBySlug(slug);
   if (!post) return {};
   return {
     title: `${post.title} | 인사이트`,
@@ -23,9 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function InsightDetailPage({ params }: Props) {
   const { slug } = await params;
-  const post = getInsight(slug);
+  const insights = await getInsights();
+  const post = insights.find((p) => p.slug === slug);
   if (!post) notFound();
 
+  const body = await getInsightBody(post);
   const others = insights.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
@@ -64,9 +70,9 @@ export default async function InsightDetailPage({ params }: Props) {
 
         <div className="container-k py-16 md:py-24">
           <Reveal>
-            {post.body && post.body.length > 0 ? (
+            {body && body.length > 0 ? (
               <div className="mx-auto max-w-2xl space-y-7 text-[17px] leading-[1.9] text-ink md:text-lg">
-                {post.body.map((paragraph, i) => (
+                {body.map((paragraph, i) => (
                   <p key={i}>{paragraph}</p>
                 ))}
               </div>
@@ -74,9 +80,8 @@ export default async function InsightDetailPage({ params }: Props) {
               <div className="mx-auto max-w-2xl border-l-2 border-accent bg-paper-deep/60 px-8 py-12 text-[15px] leading-[1.8] text-ink-mute">
                 [본문 준비 중]
                 <br />
-                이 글의 전체 내용은 준비되는 대로 공개됩니다. 원고가 확정되면{" "}
-                <code>src/data/insights.ts</code>의 body 배열에 문단을
-                추가하세요.
+                이 글의 전체 내용은 준비되는 대로 공개됩니다. Notion의 K:ZIP
+                인사이트에서 해당 글을 열어 페이지 본문에 원고를 작성하세요.
               </div>
             )}
           </Reveal>

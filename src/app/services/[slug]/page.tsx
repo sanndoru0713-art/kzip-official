@@ -3,17 +3,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import CTABand from "@/components/CTABand";
-import { getService, services } from "@/data/services";
+import { services as localServices } from "@/data/services";
+import { getServiceBySlug, getServices } from "@/lib/notion/queries";
+
+export const revalidate = 300;
 
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return services.map((service) => ({ slug: service.slug }));
+  // 빌드 시에는 로컬 slug 기준으로 생성 — CMS에서 추가된 slug는 요청 시 렌더링됩니다.
+  return localServices.map((service) => ({ slug: service.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getServiceBySlug(slug);
   if (!service) return {};
   return {
     title: `${service.title} | 서비스`,
@@ -23,7 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
-  const service = getService(slug);
+  const services = await getServices();
+  const service = services.find((s) => s.slug === slug);
   if (!service) notFound();
 
   const index = services.findIndex((s) => s.slug === service.slug);
@@ -34,7 +39,7 @@ export default async function ServiceDetailPage({ params }: Props) {
     { key: "B", title: "수행 범위", items: service.scope, numbered: false },
     { key: "C", title: "진행 방식", items: service.process, numbered: true },
     { key: "D", title: "주요 산출물", items: service.deliverables, numbered: false },
-  ];
+  ].filter((block) => block.items.length > 0);
 
   return (
     <>

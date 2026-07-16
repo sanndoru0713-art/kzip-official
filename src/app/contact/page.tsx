@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import ContactForm from "@/components/ContactForm";
-import { site } from "@/data/site";
+import { getSiteInfo } from "@/lib/notion/queries";
 
 export const metadata: Metadata = {
   title: "문의하기",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 type Props = { searchParams: Promise<{ type?: string }> };
 
 export default async function ContactPage({ searchParams }: Props) {
-  const { type } = await searchParams;
+  const [{ type }, siteInfo] = await Promise.all([searchParams, getSiteInfo()]);
 
   return (
     <section className="lg:grid lg:min-h-[calc(100vh-80px)] lg:grid-cols-12">
@@ -67,11 +67,11 @@ export default async function ContactPage({ searchParams }: Props) {
                 <dl className="mt-5 space-y-2 text-[15px] text-white/65">
                   <div className="flex gap-4">
                     <dt className="shrink-0 font-medium text-white/40">이메일</dt>
-                    <dd>{site.contact.email}</dd>
+                    <dd>{siteInfo.email}</dd>
                   </div>
                   <div className="flex gap-4">
                     <dt className="shrink-0 font-medium text-white/40">전화</dt>
-                    <dd>{site.contact.phone}</dd>
+                    <dd>{siteInfo.phone}</dd>
                   </div>
                 </dl>
               </div>
@@ -84,7 +84,7 @@ export default async function ContactPage({ searchParams }: Props) {
       <div className="lg:col-span-7">
         <div className="px-6 py-16 md:px-12 md:py-20 lg:px-16 lg:py-24">
           <Reveal delay={100}>
-            <ContactForm defaultType={type} />
+            <ContactForm defaultType={type} contactEmail={siteInfo.email} />
           </Reveal>
         </div>
       </div>

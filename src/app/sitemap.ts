@@ -1,11 +1,14 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/data/site";
-import { services } from "@/data/services";
-import { projects } from "@/data/projects";
-import { insights } from "@/data/insights";
+import { getInsights, getProjects, getServices } from "@/lib/notion/queries";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = site.url.replace(/\/$/, "");
+  const [services, projects, insights] = await Promise.all([
+    getServices(),
+    getProjects(),
+    getInsights(),
+  ]);
 
   const staticPages = [
     "",

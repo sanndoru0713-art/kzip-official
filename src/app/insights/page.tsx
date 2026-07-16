@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
-import PlaceholderImage from "@/components/PlaceholderImage";
+import CmsImage from "@/components/CmsImage";
 import CTABand from "@/components/CTABand";
-import { insightCategories, insights } from "@/data/insights";
+import { insightCategories } from "@/data/insights";
+import { getInsights } from "@/lib/notion/queries";
 
 export const metadata: Metadata = {
   title: "인사이트",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 type Props = { searchParams: Promise<{ category?: string }> };
 
 export default async function InsightsPage({ searchParams }: Props) {
-  const { category } = await searchParams;
+  const [{ category }, insights] = await Promise.all([searchParams, getInsights()]);
   const activeCategory = insightCategories.find((c) => c === category);
   const filtered = activeCategory
     ? insights.filter((post) => post.category === activeCategory)
@@ -75,7 +76,9 @@ export default async function InsightsPage({ searchParams }: Props) {
                     className="group mt-14 grid gap-8 border-t border-ink pt-10 lg:grid-cols-12 lg:gap-12 md:mt-20"
                   >
                     <div className="hover-zoom overflow-hidden lg:col-span-5">
-                      <PlaceholderImage
+                      <CmsImage
+                        src={featured.imageUrl}
+                        alt={featured.title}
                         kind="strategy"
                         figure="FEATURED"
                         label="아티클 대표 이미지 교체 가능"
@@ -138,7 +141,9 @@ export default async function InsightsPage({ searchParams }: Props) {
                         className="pointer-events-none absolute right-24 top-1/2 z-10 hidden w-44 -translate-y-1/2 xl:block"
                       >
                         <span className="block translate-y-2 opacity-0 shadow-sm transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-                          <PlaceholderImage
+                          <CmsImage
+                            src={post.imageUrl}
+                            alt=""
                             kind={(["office", "meeting", "global", "strategy"] as const)[i % 4]}
                             label="썸네일"
                             ratio="aspect-[16/10]"
@@ -158,8 +163,8 @@ export default async function InsightsPage({ searchParams }: Props) {
 
           <Reveal>
             <p className="mt-20 text-[13px] leading-relaxed text-ink-mute">
-              새 글은 <code>src/data/insights.ts</code>에 항목을 추가하면 목록과
-              상세 페이지에 자동 반영됩니다.
+              새 글은 Notion의 K:ZIP 인사이트에 추가하고 공개 여부를 체크하면
+              약 5분 내에 목록과 상세 페이지에 자동 반영됩니다.
             </p>
           </Reveal>
         </div>

@@ -3,7 +3,9 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import CTABand from "@/components/CTABand";
-import { services } from "@/data/services";
+import { getServices } from "@/lib/notion/queries";
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "서비스",
@@ -14,7 +16,8 @@ export const metadata: Metadata = {
 /** 매거진 목차 — 행마다 들여쓰기 리듬을 다르게 */
 const indentPattern = ["", "lg:pl-24", "lg:pl-48", "lg:pl-24"];
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getServices();
   return (
     <>
       <PageHero
@@ -27,7 +30,7 @@ export default function ServicesPage() {
       <section>
         <div className="container-k py-20 md:py-28">
           <Reveal>
-            <p className="overline-k">Index — 12 Services</p>
+            <p className="overline-k">Index — {services.length} Services</p>
           </Reveal>
           <ol className="mt-10 border-t border-line">
             {services.map((service, i) => (

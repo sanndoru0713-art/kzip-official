@@ -4,19 +4,24 @@ import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import Parallax from "@/components/Parallax";
 import PlaceholderImage from "@/components/PlaceholderImage";
+import CmsImage from "@/components/CmsImage";
 import CTABand from "@/components/CTABand";
-import { getProject, projects } from "@/data/projects";
+import { projects as localProjects } from "@/data/projects";
 import { getService } from "@/data/services";
+import { getProjectBySlug } from "@/lib/notion/queries";
+
+export const revalidate = 300;
 
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+  // 빌드 시에는 로컬 slug 기준으로 생성 — CMS에서 추가된 slug는 요청 시 렌더링됩니다.
+  return localProjects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getProjectBySlug(slug);
   if (!project) return {};
   return {
     title: `${project.title} | 프로젝트`,
@@ -26,14 +31,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectDetailPage({ params }: Props) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getProjectBySlug(slug);
   if (!project) notFound();
 
   const narrative = [
     { key: "01", title: "프로젝트 개요", content: project.overview },
     { key: "02", title: "고객 과제", content: project.challenge },
     { key: "03", title: "접근 전략", content: project.approach },
-  ];
+  ].filter((section) => section.content);
 
   const relatedServices = project.relatedServices
     .map((slug) => getService(slug))
@@ -100,7 +105,9 @@ export default async function ProjectDetailPage({ params }: Props) {
       {/* 풀 블리드 히어로 이미지 */}
       <Reveal className="reveal-img">
         <Parallax speed={0.07}>
-          <PlaceholderImage
+          <CmsImage
+            src={project.imageUrl}
+            alt={project.title}
             kind="global"
             figure="HERO"
             ratio="aspect-[16/9] md:aspect-[21/9]"
@@ -144,6 +151,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             ))}
 
             {/* 수행 내용 */}
+            {project.execution.length > 0 && (
             <Reveal>
               <div className="grid gap-6 border-t border-line py-12 md:py-16 lg:grid-cols-12">
                 <div className="flex items-baseline gap-5 lg:col-span-4">
@@ -169,6 +177,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 </ul>
               </div>
             </Reveal>
+            )}
 
             {/* 제작 결과물 — 이미지 그리드 */}
             <Reveal>

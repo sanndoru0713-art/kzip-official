@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { nav, site } from "@/data/site";
+import { getSiteInfo } from "@/lib/notion/queries";
 
-export default function Footer() {
+export default async function Footer() {
+  const siteInfo = await getSiteInfo();
   return (
     <footer className="border-t border-line bg-paper">
       {/* 초대형 워드마크 — 아웃라인 타이포 */}
@@ -27,19 +29,19 @@ export default function Footer() {
           <dl className="mt-8 space-y-1.5 text-[13px] leading-relaxed text-ink-mute">
             <div className="flex gap-3">
               <dt className="shrink-0">대표</dt>
-              <dd>{site.ceo}</dd>
+              <dd>{siteInfo.ceo}</dd>
             </div>
             <div className="flex gap-3">
               <dt className="shrink-0">이메일</dt>
-              <dd>{site.contact.email}</dd>
+              <dd>{siteInfo.email}</dd>
             </div>
             <div className="flex gap-3">
               <dt className="shrink-0">주소</dt>
-              <dd>{site.contact.address}</dd>
+              <dd>{siteInfo.address}</dd>
             </div>
             <div className="flex gap-3">
               <dt className="shrink-0">사업자등록번호</dt>
-              <dd>{site.contact.businessNumber}</dd>
+              <dd>{siteInfo.businessNumber}</dd>
             </div>
           </dl>
         </div>
