@@ -105,7 +105,26 @@ NOTION_CRM_DATABASE_ID=26785326655141bb9754aab921651bfc
 - Vercel 대시보드 → **Deployments** → 최신 배포 우측 **⋯ → Redeploy** 클릭
 - 또는 저장소에 아무 커밋이나 푸시하면 자동 재배포됩니다.
 
-### 4-3. 테스트 문의 확인 방법
+### 4-3. 연동 상태 진단 — /api/cms-status
+
+배포 후 브라우저에서 `https://도메인/api/cms-status` 를 열면 DB별 연동 상태가 JSON으로 표시됩니다.
+
+- `status: "env_missing"` → 해당 환경변수가 Vercel에 등록되지 않음
+- `status: "error"` → error 필드 확인 (401=API 키 오류, 404=Integration에 DB 미공유 또는 ID 오류)
+- `status: "ok"` + `source: "fallback"` → 연동은 정상이지만 공개 여부가 체크된 행이 없음
+- `source: "notion"` → 정상 — Notion 데이터 사용 중
+
+Notion 응답 요약은 Vercel → Deployments → 배포 선택 → **Logs**에서 `[notion-cms]` 로 검색해 확인할 수 있습니다.
+
+### 4-4. 즉시 반영 — /api/revalidate
+
+Notion 수정은 기본적으로 최대 5분(ISR) 내 반영됩니다. 즉시 반영하려면:
+
+1. Vercel 환경변수에 `REVALIDATE_SECRET`(임의의 긴 문자열) 추가 후 재배포
+2. 브라우저에서 `https://도메인/api/revalidate?secret=설정한값` 접속
+3. `{"revalidated":true}` 응답 후 새로고침하면 즉시 반영됩니다
+
+### 4-5. 테스트 문의 확인 방법
 
 1. 배포된 사이트의 `/contact`에서 테스트 문의를 제출합니다.
 2. "문의가 정상적으로 접수되었습니다" 메시지를 확인합니다.

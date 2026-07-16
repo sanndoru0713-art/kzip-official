@@ -34,6 +34,19 @@ function logNotionError(scope: string, error: unknown) {
   console.error(`[notion-cms] ${scope} 조회 실패 — 로컬 데이터로 폴백합니다.`, error);
 }
 
+/** Notion 응답 요약을 서버 로그에 남깁니다 (Vercel Logs에서 확인 가능). */
+function logNotionResult(scope: string, total: number, published: number) {
+  if (published > 0) {
+    console.log(
+      `[notion-cms] ${scope}: Notion ${total}행 조회 → 공개 ${published}건 사용 (source: notion)`,
+    );
+  } else {
+    console.warn(
+      `[notion-cms] ${scope}: Notion ${total}행 조회 → 공개된 행이 없어 로컬 데이터 사용 (source: fallback)`,
+    );
+  }
+}
+
 // ————— 서비스 —————
 
 export type ServiceWithImage = Service & { imageUrl?: string };
@@ -54,6 +67,7 @@ export async function getServices(): Promise<ServiceWithImage[]> {
       .map(mapService)
       .filter((r): r is NonNullable<typeof r> => r !== null)
       .sort((a, b) => a.order - b.order);
+    logNotionResult("서비스", pages.length, rows.length);
     if (rows.length === 0) return localServices;
 
     return rows.map((row, i) => {
@@ -101,6 +115,7 @@ export async function getProjects(): Promise<ProjectWithImage[]> {
       .map(mapProject)
       .filter((r): r is NonNullable<typeof r> => r !== null)
       .sort((a, b) => a.order - b.order);
+    logNotionResult("프로젝트", pages.length, rows.length);
     if (rows.length === 0) return localProjects;
 
     return rows.map((row) => {
@@ -154,6 +169,7 @@ export async function getInsights(): Promise<InsightWithMeta[]> {
       .map(mapInsight)
       .filter((r): r is CmsInsight => r !== null)
       .sort((a, b) => a.order - b.order || b.date.localeCompare(a.date));
+    logNotionResult("인사이트", pages.length, rows.length);
     if (rows.length === 0) return localInsights;
 
     return rows.map((row) => {
@@ -228,6 +244,7 @@ export async function getSiteInfo(): Promise<SiteInfo> {
   try {
     const pages = await fetchSiteInfo(databaseId);
     const published = pages.filter(isPublished);
+    logNotionResult("사이트 기본정보", pages.length, published.length);
     if (published.length === 0) return localSiteInfo;
     // 단일 레코드 운영 원칙 — 공개된 첫 번째 행만 사용
     return { ...localSiteInfo, ...mapSiteInfo(published[0]) };
@@ -251,6 +268,7 @@ export async function getCeoProfile(): Promise<CeoProfile> {
   try {
     const pages = await fetchProfile(databaseId);
     const published = pages.filter(isPublished);
+    logNotionResult("대표 프로필", pages.length, published.length);
     if (published.length === 0) return null;
     return mapProfile(published[0]);
   } catch (error) {
