@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  /* K:ZIP 디자인 토큰 — 웜 화이트 배경 + 딥 차콜 텍스트 + 절제된 테라코타 포인트 */
+  --color-paper: #faf8f4;
+  --color-paper-deep: #f1ede5;
+  --color-ink: #22252e;
+  --color-ink-soft: #52565f;
+  --color-ink-mute: #8a8e97;
+  --color-line: #e3ded3;
+  --color-accent: #b04e28;
+  --color-accent-deep: #8f3d1d;
+  --color-night: #1b202d;
+  --color-night-soft: #272d3d;
+  --color-night-line: #3a4155;
+
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", "Helvetica Neue", Arial,
+    sans-serif;
+  --font-serif: "Noto Serif KR", "Apple Myungjo", "Nanum Myeongjo", Batang, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+/* 공통 컨테이너 */
+.container-k {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 76rem;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .container-k {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* 스크롤 등장 효과 — 절제된 페이드업 한 종류만 사용 */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* 포커스 접근성 */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
