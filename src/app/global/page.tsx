@@ -5,6 +5,7 @@ import Reveal from "@/components/Reveal";
 import Parallax from "@/components/Parallax";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import CTABand from "@/components/CTABand";
+import GlobalPageTimeline from "@/components/GlobalPageTimeline";
 
 export const metadata: Metadata = {
   title: "일본·글로벌",
@@ -133,29 +134,9 @@ export default function GlobalPage() {
               </div>
             </div>
 
-            {/* 우측 타임라인 */}
+            {/* 우측 타임라인 — 스크롤에 따라 현재 항목 활성화 */}
             <div className="lg:col-span-6 lg:col-start-7">
-              <ol className="relative border-l border-line pl-10 md:pl-14">
-                {japanCapabilities.map((item, i) => (
-                  <li key={item.number} className={i === 0 ? "" : "mt-16 md:mt-20"}>
-                    <Reveal delay={(i % 3) * 60}>
-                      <span
-                        aria-hidden
-                        className="absolute -left-[5px] mt-2.5 block h-[9px] w-[9px] rounded-full bg-accent"
-                      />
-                      <p className="text-[12px] font-bold tracking-[0.2em] text-ink-mute">
-                        {item.number}
-                      </p>
-                      <h3 className="mt-2 text-2xl font-bold tracking-[-0.015em] md:text-[1.7rem]">
-                        {item.title}
-                      </h3>
-                      <p className="mt-4 max-w-lg text-[15px] leading-[1.8] text-ink-soft">
-                        {item.description}
-                      </p>
-                    </Reveal>
-                  </li>
-                ))}
-              </ol>
+              <GlobalPageTimeline items={japanCapabilities} />
             </div>
           </div>
         </div>

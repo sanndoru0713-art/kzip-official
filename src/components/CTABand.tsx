@@ -4,7 +4,7 @@ import Reveal from "@/components/Reveal";
 /** 페이지 하단 공통 문의 CTA — 초대형 타이포 중심. */
 export default function CTABand() {
   return (
-    <section className="border-t border-line bg-paper">
+    <section className="cta-band border-t border-line bg-paper">
       <div className="container-k py-28 md:py-44">
         <Reveal className="reveal-mask">
           <p className="overline-k">
@@ -27,7 +27,7 @@ export default function CTABand() {
             </p>
             <Link
               href="/contact"
-              className="group inline-flex w-fit shrink-0 items-center gap-3 rounded-full bg-accent px-9 py-4.5 text-base font-semibold text-white transition-colors hover:bg-accent-deep"
+              className="group inline-flex w-fit shrink-0 items-center gap-3 rounded-full border border-accent bg-accent px-9 py-4.5 text-base font-semibold text-white transition-colors duration-300 hover:bg-paper hover:text-accent"
             >
               프로젝트 문의하기
               <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">

@@ -35,9 +35,11 @@ export default async function InsightsPage({ searchParams }: Props) {
         <div className="container-k py-14 md:py-20">
           {/* 카테고리 필터 */}
           <Reveal>
+            {/* scroll={false} — 필터 전환 시 새로고침·스크롤 점프 없이 목록만 갱신 */}
             <nav aria-label="카테고리 필터" className="flex flex-wrap gap-2.5">
               <Link
                 href="/insights"
+                scroll={false}
                 className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
                   !activeCategory
                     ? "border-ink bg-ink text-white"
@@ -50,6 +52,7 @@ export default async function InsightsPage({ searchParams }: Props) {
                 <Link
                   key={cat}
                   href={`/insights?category=${encodeURIComponent(cat)}`}
+                  scroll={false}
                   className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
                     activeCategory === cat
                       ? "border-ink bg-ink text-white"
@@ -106,7 +109,7 @@ export default async function InsightsPage({ searchParams }: Props) {
                   <Reveal key={post.slug} delay={(i % 4) * 50}>
                     <Link
                       href={`/insights/${post.slug}`}
-                      className="group grid gap-3 border-b border-line py-9 md:grid-cols-[120px_150px_1fr_48px] md:items-baseline md:gap-8 md:py-12"
+                      className="group relative grid gap-3 border-b border-line py-9 md:grid-cols-[120px_150px_1fr_48px] md:items-baseline md:gap-8 md:py-12"
                     >
                       <time
                         dateTime={post.date}
@@ -116,7 +119,7 @@ export default async function InsightsPage({ searchParams }: Props) {
                       </time>
                       <p className="overline-k text-accent">{post.category}</p>
                       <div>
-                        <h3 className="text-xl font-bold leading-snug tracking-[-0.015em] transition-colors group-hover:text-accent md:text-2xl">
+                        <h3 className="text-xl font-bold leading-snug tracking-[-0.015em] transition-[color,transform] duration-300 group-hover:translate-x-1.5 group-hover:text-accent md:text-2xl">
                           {post.title}
                         </h3>
                         <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
@@ -128,6 +131,19 @@ export default async function InsightsPage({ searchParams }: Props) {
                         className="hidden text-xl text-ink-mute transition-all duration-300 group-hover:translate-x-1.5 group-hover:text-accent md:block"
                       >
                         →
+                      </span>
+                      {/* hover 시 우측에 나타나는 썸네일 — 레이아웃에 영향 없음 */}
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute right-24 top-1/2 z-10 hidden w-44 -translate-y-1/2 xl:block"
+                      >
+                        <span className="block translate-y-2 opacity-0 shadow-sm transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                          <PlaceholderImage
+                            kind={(["office", "meeting", "global", "strategy"] as const)[i % 4]}
+                            label="썸네일"
+                            ratio="aspect-[16/10]"
+                          />
+                        </span>
                       </span>
                     </Link>
                   </Reveal>

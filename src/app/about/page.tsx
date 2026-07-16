@@ -255,7 +255,12 @@ export default function AboutPage() {
             {workingSteps.map((item, i) => (
               <li key={item.step}>
                 <Reveal delay={i * 80}>
-                  <div className="border-t-2 border-ink pt-6">
+                  <div className="relative pt-6">
+                    {/* 진입 시 좌→우로 그려지는 상단 선 */}
+                    <span
+                      aria-hidden
+                      className="line-grow absolute inset-x-0 top-0 h-[2px] bg-ink"
+                    />
                     <p className="text-[13px] font-bold tracking-[0.15em] text-accent">
                       {item.step}
                     </p>

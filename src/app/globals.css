@@ -140,6 +140,38 @@ body {
   transform: scale(1);
 }
 
+/* ————— 스크롤 리빌: 구분선 좌→우 확장 ————— */
+.line-grow {
+  display: block;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1s var(--ease-editorial) 0.15s;
+}
+.is-visible .line-grow {
+  transform: scaleX(1);
+}
+
+/* ————— 페이지 전환: 짧은 페이드 ————— */
+.page-fade {
+  animation: pageFade 0.35s var(--ease-editorial);
+}
+@keyframes pageFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ————— CTA 진입 시 배경 미세 전환 ————— */
+.cta-band {
+  transition: background-color 1.4s var(--ease-editorial);
+}
+.cta-band:has(.is-visible) {
+  background-color: #f6f7f9;
+}
+
 /* ————— 호버: 밑줄 슬라이드 링크 ————— */
 .link-slide {
   position: relative;
@@ -177,11 +209,18 @@ body {
   .reveal,
   .reveal-img,
   .reveal-img .media-scale,
-  .mask-line > span {
+  .mask-line > span,
+  .line-grow {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
     transition: none !important;
+  }
+  .page-fade {
+    animation: none;
+  }
+  .cta-band {
+    transition: none;
   }
 }
 

@@ -35,8 +35,13 @@ export default function ServicesPage() {
                 <Reveal delay={(i % 4) * 40}>
                   <Link
                     href={`/services/${service.slug}`}
-                    className={`group flex items-baseline gap-6 py-8 transition-all duration-300 md:gap-10 md:py-10 ${indentPattern[i % 4]}`}
+                    className={`group relative flex items-baseline gap-6 py-8 transition-all duration-300 md:gap-10 md:py-10 ${indentPattern[i % 4]}`}
                   >
+                    {/* hover 시 하단에서 확장되는 블루 포인트 선 */}
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 -bottom-px z-10 h-px origin-left scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
+                    />
                     <span className="shrink-0 text-[13px] font-bold tracking-[0.15em] text-ink-mute transition-colors group-hover:text-accent">
                       {service.number}
                     </span>

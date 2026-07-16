@@ -4,6 +4,8 @@ import Parallax from "@/components/Parallax";
 import SectionHeading from "@/components/SectionHeading";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import CTABand from "@/components/CTABand";
+import GlobalTimeline from "@/components/home/GlobalTimeline";
+import ProcessSteps from "@/components/home/ProcessSteps";
 import { homeServices } from "@/data/services";
 import { projects } from "@/data/projects";
 import { insights } from "@/data/insights";
@@ -184,7 +186,17 @@ export default function HomePage() {
                         />
                       </div>
                     )}
-                    <div className="border-t border-ink pt-6">
+                    <div className="relative pt-6">
+                      {/* 진입 시 좌→우로 그려지는 상단 구분선 */}
+                      <span
+                        aria-hidden
+                        className="line-grow absolute inset-x-0 top-0 h-px bg-ink"
+                      />
+                      {/* hover 시 확장되는 블루 포인트 선 */}
+                      <span
+                        aria-hidden
+                        className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
+                      />
                       <div className="flex items-baseline justify-between">
                         <span className="text-sm font-bold text-accent">
                           {service.number}
@@ -196,7 +208,7 @@ export default function HomePage() {
                           →
                         </span>
                       </div>
-                      <h3 className={`mt-4 font-bold tracking-[-0.02em] transition-colors group-hover:text-accent ${i === 0 ? "text-3xl md:text-4xl" : "text-2xl md:text-[1.7rem]"}`}>
+                      <h3 className={`mt-4 font-bold tracking-[-0.02em] transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-accent ${i === 0 ? "text-3xl md:text-4xl" : "text-2xl md:text-[1.7rem]"}`}>
                         {service.title}
                       </h3>
                       <p className="mt-4 max-w-md text-[15px] leading-relaxed text-ink-soft">
@@ -329,37 +341,9 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* 우측 타임라인 */}
+            {/* 우측 타임라인 — 스크롤에 따라 현재 단계 활성화 */}
             <div className="lg:col-span-5 lg:col-start-8">
-              <ol className="relative border-l border-line pl-10">
-                {globalCapabilities.map((capability, i) => (
-                  <li key={capability} className={i === 0 ? "" : "mt-14"}>
-                    <Reveal delay={i * 70}>
-                      <span
-                        aria-hidden
-                        className="absolute -left-[5px] mt-2 block h-[9px] w-[9px] rounded-full bg-accent"
-                      />
-                      <p className="text-[12px] font-bold tracking-[0.2em] text-ink-mute">
-                        {String(i + 1).padStart(2, "0")}
-                      </p>
-                      <h3 className="mt-2 text-xl font-bold tracking-[-0.01em] md:text-2xl">
-                        {capability}
-                      </h3>
-                    </Reveal>
-                  </li>
-                ))}
-              </ol>
-              <Reveal delay={100}>
-                <Link
-                  href="/global"
-                  className="group ml-10 mt-14 inline-flex items-center gap-2 text-[15px] font-semibold transition-colors hover:text-accent"
-                >
-                  일본·글로벌 자세히 보기
-                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1.5">
-                    →
-                  </span>
-                </Link>
-              </Reveal>
+              <GlobalTimeline items={globalCapabilities} />
             </div>
           </div>
         </div>
@@ -385,32 +369,8 @@ export default function HomePage() {
                 </Reveal>
               </div>
             </div>
-            <ol className="lg:col-span-6 lg:col-start-7">
-              {workingSteps.map((item, i) => (
-                <li
-                  key={item.step}
-                  className={`border-t border-night-line py-10 md:py-12 ${
-                    i === workingSteps.length - 1 ? "border-b" : ""
-                  }`}
-                >
-                  <Reveal delay={i * 60}>
-                    <div className="flex items-start gap-8">
-                      <span className="text-[13px] font-bold tracking-[0.15em] text-accent">
-                        {item.step}
-                      </span>
-                      <div>
-                        <h3 className="text-2xl font-bold tracking-[-0.01em] md:text-3xl">
-                          {item.name}
-                        </h3>
-                        <p className="mt-3 text-[15px] leading-relaxed text-white/55">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  </Reveal>
-                </li>
-              ))}
-            </ol>
+            {/* 스크롤 진행에 따라 단계별 활성화 + 진행선 채움 */}
+            <ProcessSteps steps={workingSteps} />
           </div>
         </div>
       </section>
@@ -430,14 +390,14 @@ export default function HomePage() {
               <Reveal key={post.slug} delay={(i % 4) * 50}>
                 <Link
                   href={`/insights/${post.slug}`}
-                  className="group grid gap-3 border-b border-line py-9 transition-colors md:grid-cols-[90px_150px_1fr_48px] md:items-baseline md:gap-8 md:py-11"
+                  className="group relative grid gap-3 border-b border-line py-9 transition-colors md:grid-cols-[90px_150px_1fr_48px] md:items-baseline md:gap-8 md:py-11"
                 >
                   <span className="hidden text-[13px] font-bold tracking-[0.15em] text-ink-mute md:block">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <p className="overline-k text-accent">{post.category}</p>
                   <div>
-                    <h3 className="text-xl font-bold leading-snug tracking-[-0.015em] transition-colors group-hover:text-accent md:text-2xl">
+                    <h3 className="text-xl font-bold leading-snug tracking-[-0.015em] transition-[color,transform] duration-300 group-hover:translate-x-1.5 group-hover:text-accent md:text-2xl">
                       {post.title}
                     </h3>
                     <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
@@ -449,6 +409,19 @@ export default function HomePage() {
                     className="hidden text-xl text-ink-mute transition-all duration-300 group-hover:translate-x-1.5 group-hover:text-accent md:block"
                   >
                     →
+                  </span>
+                  {/* hover 시 우측에 나타나는 썸네일 — 레이아웃에 영향 없음 */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute right-24 top-1/2 z-10 hidden w-44 -translate-y-1/2 xl:block"
+                  >
+                    <span className="block translate-y-2 opacity-0 shadow-sm transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                      <PlaceholderImage
+                        kind={(["strategy", "office", "meeting", "global"] as const)[i % 4]}
+                        label="썸네일"
+                        ratio="aspect-[16/10]"
+                      />
+                    </span>
                   </span>
                 </Link>
               </Reveal>

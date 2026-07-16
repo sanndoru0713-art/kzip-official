@@ -8,10 +8,29 @@ import { nav } from "@/data/site";
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  // 스크롤 시 헤더 축소 — rAF 스로틀
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      setScrolled(window.scrollY > 32);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   // 메뉴 오픈 시 스크롤 잠금
   useEffect(() => {
@@ -27,8 +46,22 @@ export default function Header() {
   const mainNav = nav.filter((item) => item.href !== "/contact");
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-paper/90 backdrop-blur-md">
-      <div className="container-k flex h-[68px] items-center justify-between md:h-20">
+    <header
+      // 메뉴 오픈 시 backdrop-filter 제거 — filter가 containing block을 만들어
+      // fixed 풀스크린 메뉴가 헤더 영역에 갇히는 것을 방지
+      className={`sticky top-0 z-50 border-b border-line transition-colors duration-300 ${
+        open
+          ? "bg-paper"
+          : scrolled
+            ? "bg-paper/95 backdrop-blur-md"
+            : "bg-paper/90 backdrop-blur-md"
+      }`}
+    >
+      <div
+        className={`container-k flex items-center justify-between transition-[height] duration-300 ease-out ${
+          scrolled ? "h-14 md:h-16" : "h-[68px] md:h-20"
+        }`}
+      >
         <Link
           href="/"
           className="text-[22px] font-extrabold tracking-[-0.02em] md:text-2xl"

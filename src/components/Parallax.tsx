@@ -23,6 +23,8 @@ export default function Parallax({
     const inner = innerRef.current;
     if (!outer || !inner) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // 모바일에서는 패럴랙스를 비활성화해 스크롤 성능을 보호
+    if (window.matchMedia("(max-width: 767px)").matches) return;
 
     let raf = 0;
     const update = () => {
