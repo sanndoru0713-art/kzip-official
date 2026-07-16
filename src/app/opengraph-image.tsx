@@ -15,36 +15,38 @@ export default function OgImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#faf8f4",
+          backgroundColor: "#ffffff",
           padding: "72px 80px",
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", fontSize: 44, fontWeight: 800, color: "#22252e" }}>
-          K<span style={{ color: "#b04e28" }}>:</span>ZIP
+        <div style={{ display: "flex", fontSize: 44, fontWeight: 800, color: "#111827" }}>
+          K<span style={{ color: "#1f3fff" }}>:</span>ZIP
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
-              fontSize: 76,
+              fontSize: 78,
               fontWeight: 800,
-              color: "#22252e",
-              lineHeight: 1.25,
+              color: "#111827",
+              lineHeight: 1.22,
+              letterSpacing: "-0.03em",
             }}
           >
             전략을 설계하고,
           </div>
           <div
             style={{
-              fontSize: 76,
+              fontSize: 78,
               fontWeight: 800,
-              color: "#22252e",
-              lineHeight: 1.25,
+              color: "#111827",
+              lineHeight: 1.22,
+              letterSpacing: "-0.03em",
             }}
           >
             성장을 실행합니다.
           </div>
-          <div style={{ marginTop: 28, fontSize: 28, color: "#52565f" }}>
+          <div style={{ marginTop: 30, fontSize: 28, color: "#6b7280" }}>
             전략 중심의 디지털 마케팅 및 글로벌 프로젝트 수행 기업
           </div>
         </div>
@@ -52,12 +54,21 @@ export default function OgImage() {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            fontSize: 22,
-            color: "#8a8e97",
+            alignItems: "center",
+            fontSize: 20,
+            color: "#9ca3af",
+            letterSpacing: "0.2em",
           }}
         >
-          <div>Strategy · Content · Digital · Global</div>
-          <div style={{ color: "#b04e28" }}>kzip</div>
+          <div>STRATEGY · CONTENT · DIGITAL · GLOBAL</div>
+          <div
+            style={{
+              width: 14,
+              height: 14,
+              borderRadius: 999,
+              backgroundColor: "#1f3fff",
+            }}
+          />
         </div>
       </div>
     ),

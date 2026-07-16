@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
-import SectionHeading from "@/components/SectionHeading";
+import Parallax from "@/components/Parallax";
+import PlaceholderImage from "@/components/PlaceholderImage";
 import CTABand from "@/components/CTABand";
 
 export const metadata: Metadata = {
@@ -73,64 +74,106 @@ export default function GlobalPage() {
     <>
       <PageHero
         overline="Japan · Global"
-        title="언어가 아니라, 시장을 현지화합니다"
+        titleLines={["언어가 아니라,", "시장을 현지화합니다"]}
         description="K:ZIP의 일본·글로벌 역량은 번역 서비스가 아닙니다. 현지 시장 분석, 고객 행동 이해, 플랫폼과 파트너십 구축까지 — 시장 전략과 사업개발의 영역입니다."
       />
 
-      {/* 관점 */}
-      <section className="border-b border-line bg-paper-deep/60">
-        <div className="container-k py-20 md:py-28">
-          <Reveal>
-            <blockquote className="mx-auto max-w-3xl text-center font-serif text-2xl font-semibold leading-[1.65] md:text-3xl">
-              “언어만 바꾸는 것이 아니라,
-              <br />
-              시장이 반응하는 방식에 맞춰
-              <br />
-              전략을 다시 설계합니다.”
-            </blockquote>
-          </Reveal>
+      {/* 풀 블리드 이미지 + 오버레이 스테이트먼트 */}
+      <section className="relative">
+        <Reveal className="reveal-img">
+          <Parallax speed={0.08}>
+            <PlaceholderImage
+              kind="global"
+              figure="FIG.01"
+              tone="dark"
+              ratio="aspect-[16/10] md:aspect-[21/9]"
+            />
+          </Parallax>
+        </Reveal>
+        <div className="pointer-events-none absolute inset-0 flex items-end">
+          <div className="container-k pb-10 md:pb-16">
+            <Reveal delay={300}>
+              <blockquote className="display-3 max-w-3xl text-white">
+                “언어만 바꾸는 것이 아니라, 시장이 반응하는 방식에 맞춰
+                전략을 다시 설계합니다.”
+              </blockquote>
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* 역량 목록 */}
-      <section className="border-b border-line">
-        <div className="container-k py-20 md:py-28">
-          <SectionHeading
-            overline="Capabilities"
-            title="일본·글로벌 수행 영역"
-            description="일본 시장 진입부터 글로벌 파트너십까지, 아홉 개 영역을 프로젝트 목표에 맞게 조합합니다."
-          />
-          <ul className="mt-12 grid gap-x-12 gap-y-12 border-t border-line pt-12 md:grid-cols-2 lg:grid-cols-3">
-            {japanCapabilities.map((item, i) => (
-              <li key={item.number}>
-                <Reveal delay={(i % 3) * 60}>
-                  <p className="text-xs font-semibold text-accent">{item.number}</p>
-                  <h2 className="mt-2 text-xl font-bold">{item.title}</h2>
-                  <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                    {item.description}
+      {/* 수행 영역 — 이미지 + 타임라인 */}
+      <section>
+        <div className="container-k py-24 md:py-36">
+          <div className="grid gap-16 lg:grid-cols-12 lg:gap-12">
+            {/* 좌측 스티키: 헤딩 + 이미지 스택 */}
+            <div className="lg:col-span-5">
+              <div className="space-y-10 lg:sticky lg:top-32">
+                <Reveal>
+                  <p className="overline-k">
+                    <span className="text-accent">Capabilities</span>
+                  </p>
+                  <h2 className="display-2 mt-6">
+                    일본·글로벌
+                    <br />
+                    수행 영역
+                  </h2>
+                  <p className="mt-7 max-w-sm text-[17px] leading-[1.8] text-ink-soft">
+                    일본 시장 진입부터 글로벌 파트너십까지, 아홉 개 영역을
+                    프로젝트 목표에 맞게 조합합니다.
                   </p>
                 </Reveal>
-              </li>
-            ))}
-          </ul>
+                <Reveal className="reveal-img" delay={150}>
+                  <PlaceholderImage
+                    kind="meeting"
+                    figure="FIG.02"
+                    ratio="aspect-[4/3]"
+                  />
+                </Reveal>
+              </div>
+            </div>
+
+            {/* 우측 타임라인 */}
+            <div className="lg:col-span-6 lg:col-start-7">
+              <ol className="relative border-l border-line pl-10 md:pl-14">
+                {japanCapabilities.map((item, i) => (
+                  <li key={item.number} className={i === 0 ? "" : "mt-16 md:mt-20"}>
+                    <Reveal delay={(i % 3) * 60}>
+                      <span
+                        aria-hidden
+                        className="absolute -left-[5px] mt-2.5 block h-[9px] w-[9px] rounded-full bg-accent"
+                      />
+                      <p className="text-[12px] font-bold tracking-[0.2em] text-ink-mute">
+                        {item.number}
+                      </p>
+                      <h3 className="mt-2 text-2xl font-bold tracking-[-0.015em] md:text-[1.7rem]">
+                        {item.title}
+                      </h3>
+                      <p className="mt-4 max-w-lg text-[15px] leading-[1.8] text-ink-soft">
+                        {item.description}
+                      </p>
+                    </Reveal>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 일하는 방식 강조 */}
-      <section className="border-b border-line">
-        <div className="container-k grid gap-10 py-20 md:grid-cols-[1fr_1.6fr] md:py-28">
-          <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-              Why K:ZIP
-            </p>
-            <h2 className="mt-3 text-3xl font-bold leading-tight">
+      {/* Why K:ZIP — 다크 밴드 */}
+      <section className="bg-night text-white">
+        <div className="container-k grid gap-12 py-24 md:py-36 lg:grid-cols-12">
+          <Reveal className="lg:col-span-5">
+            <p className="overline-k text-white/40">Why K:ZIP</p>
+            <h2 className="display-2 mt-6 text-white">
               번역 회사가 아니라,
               <br />
               시장을 여는 파트너
             </h2>
           </Reveal>
-          <Reveal delay={100}>
-            <div className="space-y-6 text-sm leading-relaxed text-ink-soft md:text-base">
+          <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
+            <div className="space-y-7 text-[16px] leading-[1.85] text-white/60 md:text-[17px]">
               <p>
                 일본 시장에서의 마케팅은 “일본어를 할 줄 아는 것”과 “일본
                 시장에서 일할 줄 아는 것”의 차이에서 갈립니다. K:ZIP는 후자를
@@ -138,9 +181,8 @@ export default function GlobalPage() {
               </p>
               <p>
                 고객 분석과 시장 전략에서 출발해, 콘텐츠·채널·인플루언서·플랫폼
-                운영을 거쳐, 해외 파트너와의 사업 커뮤니케이션까지 —
-                일본어권과 글로벌 시장에서 브랜드가 실제로 성장하는 구조를
-                만듭니다.
+                운영을 거쳐, 해외 파트너와의 사업 커뮤니케이션까지 — 일본어권과
+                글로벌 시장에서 브랜드가 실제로 성장하는 구조를 만듭니다.
               </p>
               <p>
                 의료서비스처럼 신뢰와 정확성이 중요한 분야의 일본어권 마케팅
@@ -149,10 +191,10 @@ export default function GlobalPage() {
               </p>
               <Link
                 href="/projects"
-                className="group inline-flex items-center gap-2 text-sm font-medium text-ink transition-colors hover:text-accent"
+                className="group inline-flex items-center gap-2 pt-2 text-[15px] font-semibold text-white transition-colors hover:text-accent"
               >
                 관련 프로젝트 보기
-                <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1.5">
                   →
                 </span>
               </Link>

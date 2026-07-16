@@ -31,40 +31,47 @@ export default async function InsightDetailPage({ params }: Props) {
   return (
     <>
       <article>
+        {/* 아티클 헤더 — 중앙 정렬 */}
         <header className="border-b border-line">
-          <div className="container-k py-16 md:py-24">
+          <div className="container-k pb-16 pt-20 md:pb-24 md:pt-32">
             <Reveal>
-              <div className="flex flex-wrap items-center gap-4">
+              <p className="overline-k flex items-center justify-center gap-5 text-center">
                 <Link
                   href={`/insights?category=${encodeURIComponent(post.category)}`}
-                  className="text-xs font-semibold uppercase tracking-[0.2em] text-accent hover:underline"
+                  className="text-accent transition-colors hover:text-accent-deep"
                 >
                   {post.category}
                 </Link>
-                <time dateTime={post.date} className="text-xs text-ink-mute">
+                <time dateTime={post.date} className="tracking-[0.15em]">
                   {post.date.replaceAll("-", ".")}
                 </time>
-              </div>
-              <h1 className="mt-5 max-w-3xl text-3xl font-bold leading-[1.25] md:text-5xl">
-                {post.title}
+              </p>
+            </Reveal>
+            <Reveal className="reveal-mask" delay={100}>
+              <h1 className="display-2 mx-auto mt-8 max-w-4xl text-center">
+                <span className="mask-line">
+                  <span>{post.title}</span>
+                </span>
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink-soft md:text-lg">
+            </Reveal>
+            <Reveal delay={220}>
+              <p className="mx-auto mt-8 max-w-2xl text-center text-[17px] leading-[1.8] text-ink-soft md:text-lg">
                 {post.summary}
               </p>
             </Reveal>
           </div>
         </header>
 
-        <div className="container-k py-16 md:py-20">
+        <div className="container-k py-16 md:py-24">
           <Reveal>
             {post.body && post.body.length > 0 ? (
-              <div className="max-w-2xl space-y-6 text-base leading-[1.85] text-ink">
+              <div className="mx-auto max-w-2xl space-y-7 text-[17px] leading-[1.9] text-ink md:text-lg">
                 {post.body.map((paragraph, i) => (
                   <p key={i}>{paragraph}</p>
                 ))}
               </div>
             ) : (
-              <div className="max-w-2xl border border-dashed border-ink-mute/50 bg-paper-deep/40 px-6 py-10 text-sm leading-relaxed text-ink-mute">
+              <div className="mx-auto max-w-2xl border-l-2 border-accent bg-paper-deep/60 px-8 py-12 text-[15px] leading-[1.8] text-ink-mute">
                 [본문 준비 중]
                 <br />
                 이 글의 전체 내용은 준비되는 대로 공개됩니다. 원고가 확정되면{" "}
@@ -77,21 +84,16 @@ export default async function InsightDetailPage({ params }: Props) {
           {/* 다른 글 */}
           {others.length > 0 && (
             <Reveal>
-              <aside className="mt-20 border-t border-line pt-10">
-                <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-mute">
-                  다른 인사이트
-                </h2>
-                <ul className="mt-6 space-y-4">
+              <aside className="mx-auto mt-24 max-w-2xl border-t border-line pt-12">
+                <h2 className="overline-k">다른 인사이트</h2>
+                <ul className="mt-8 space-y-6">
                   {others.map((other) => (
                     <li key={other.slug}>
-                      <Link
-                        href={`/insights/${other.slug}`}
-                        className="group inline-flex flex-wrap items-baseline gap-3"
-                      >
-                        <span className="text-xs font-semibold text-accent">
+                      <Link href={`/insights/${other.slug}`} className="group block">
+                        <span className="overline-k text-accent">
                           {other.category}
                         </span>
-                        <span className="text-base font-medium transition-colors group-hover:text-accent">
+                        <span className="mt-1.5 block text-lg font-bold tracking-[-0.01em] transition-colors group-hover:text-accent md:text-xl">
                           {other.title}
                         </span>
                       </Link>
@@ -100,9 +102,9 @@ export default async function InsightDetailPage({ params }: Props) {
                 </ul>
                 <Link
                   href="/insights"
-                  className="group mt-8 inline-flex items-center gap-2 text-sm font-medium text-ink-soft transition-colors hover:text-accent"
+                  className="group mt-10 inline-flex items-center gap-2 text-[15px] font-semibold text-ink-soft transition-colors hover:text-ink"
                 >
-                  <span aria-hidden className="transition-transform group-hover:-translate-x-1">
+                  <span aria-hidden className="transition-transform duration-300 group-hover:-translate-x-1.5">
                     ←
                   </span>
                   인사이트 목록으로

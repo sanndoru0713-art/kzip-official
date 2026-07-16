@@ -11,45 +11,54 @@ export const metadata: Metadata = {
     "전략 기획, 디지털 마케팅, 브랜드 콘텐츠, 일본·글로벌 마케팅, 프로젝트 매니지먼트까지 — K:ZIP의 12개 서비스 영역을 소개합니다.",
 };
 
+/** 매거진 목차 — 행마다 들여쓰기 리듬을 다르게 */
+const indentPattern = ["", "lg:pl-24", "lg:pl-48", "lg:pl-24"];
+
 export default function ServicesPage() {
   return (
     <>
       <PageHero
         overline="Services"
-        title="전략에서 실행까지, 12개의 서비스 영역"
+        titleLines={["전략에서 실행까지,", "12개의 서비스 영역"]}
         description="개별 서비스는 따로 움직이지 않습니다. 프로젝트의 목표에 맞춰 필요한 영역을 조합해 하나의 실행 구조로 설계합니다."
       />
 
+      {/* 매거진 목차형 인덱스 */}
       <section>
-        <div className="container-k py-16 md:py-24">
-          <ul className="border-t border-line">
+        <div className="container-k py-20 md:py-28">
+          <Reveal>
+            <p className="overline-k">Index — 12 Services</p>
+          </Reveal>
+          <ol className="mt-10 border-t border-line">
             {services.map((service, i) => (
               <li key={service.slug} className="border-b border-line">
-                <Reveal delay={(i % 4) * 50}>
+                <Reveal delay={(i % 4) * 40}>
                   <Link
                     href={`/services/${service.slug}`}
-                    className="group grid gap-2 py-7 md:grid-cols-[80px_1.2fr_2fr_40px] md:items-baseline md:gap-6 md:py-8"
+                    className={`group flex items-baseline gap-6 py-8 transition-all duration-300 md:gap-10 md:py-10 ${indentPattern[i % 4]}`}
                   >
-                    <span className="text-sm font-semibold text-accent">
+                    <span className="shrink-0 text-[13px] font-bold tracking-[0.15em] text-ink-mute transition-colors group-hover:text-accent">
                       {service.number}
                     </span>
-                    <h2 className="text-xl font-bold transition-colors group-hover:text-accent md:text-2xl">
-                      {service.title}
-                    </h2>
-                    <p className="text-sm leading-relaxed text-ink-soft">
-                      {service.short}
-                    </p>
-                    <span
-                      aria-hidden
-                      className="hidden text-ink-mute transition-transform group-hover:translate-x-1 group-hover:text-accent md:block"
-                    >
-                      →
-                    </span>
+                    <div className="min-w-0">
+                      <h2 className="text-[clamp(1.5rem,3.4vw,2.75rem)] font-bold leading-tight tracking-[-0.025em] transition-colors group-hover:text-accent">
+                        {service.title}
+                        <span
+                          aria-hidden
+                          className="ml-4 inline-block text-[0.6em] text-ink-mute opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent group-hover:opacity-100"
+                        >
+                          →
+                        </span>
+                      </h2>
+                      <p className="mt-2.5 max-w-xl text-[15px] leading-relaxed text-ink-soft">
+                        {service.short}
+                      </p>
+                    </div>
                   </Link>
                 </Reveal>
               </li>
             ))}
-          </ul>
+          </ol>
         </div>
       </section>
 

@@ -84,11 +84,12 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
   }
 
   const inputClass =
-    "w-full border border-line bg-paper px-4 py-3 text-sm placeholder:text-ink-mute focus:border-ink";
-  const labelClass = "block text-sm font-medium";
+    "field-k w-full bg-transparent px-0 py-3.5 text-base text-ink placeholder:text-ink-mute";
+  const labelClass =
+    "block text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-mute";
 
   return (
-    <form onSubmit={handleSubmit} noValidate={false} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-10">
       {/* honeypot — 화면에 보이지 않음 */}
       <div className="hidden" aria-hidden>
         <label>
@@ -97,7 +98,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
         </label>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-x-10 gap-y-9 sm:grid-cols-2">
         <div>
           <label htmlFor="company" className={labelClass}>
             회사명 <span className="text-accent">*</span>
@@ -108,7 +109,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
             type="text"
             required
             placeholder="회사명 또는 기관명"
-            className={`mt-2 ${inputClass}`}
+            className={inputClass}
           />
         </div>
         <div>
@@ -121,7 +122,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
             type="text"
             required
             placeholder="담당자 성함"
-            className={`mt-2 ${inputClass}`}
+            className={inputClass}
           />
         </div>
         <div>
@@ -134,7 +135,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
             type="email"
             required
             placeholder="reply@example.com"
-            className={`mt-2 ${inputClass}`}
+            className={inputClass}
           />
         </div>
         <div>
@@ -146,7 +147,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
             name="phone"
             type="tel"
             placeholder="010-0000-0000"
-            className={`mt-2 ${inputClass}`}
+            className={inputClass}
           />
         </div>
         <div>
@@ -162,7 +163,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
                 ? defaultType
                 : ""
             }
-            className={`mt-2 ${inputClass}`}
+            className={inputClass}
           >
             <option value="" disabled>
               문의 유형을 선택하세요
@@ -183,7 +184,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
             name="schedule"
             type="text"
             placeholder="예: 2026년 3분기 착수 희망"
-            className={`mt-2 ${inputClass}`}
+            className={inputClass}
           />
         </div>
         <div className="sm:col-span-2">
@@ -195,7 +196,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
             name="budget"
             type="text"
             placeholder="예: 미정 / 월 000만 원 수준"
-            className={`mt-2 ${inputClass}`}
+            className={inputClass}
           />
         </div>
         <div className="sm:col-span-2">
@@ -206,24 +207,24 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
             id="message"
             name="message"
             required
-            rows={7}
+            rows={6}
             placeholder="현재 상황, 목표, 고민 중인 과제를 자유롭게 적어 주세요."
-            className={`mt-2 ${inputClass} resize-y`}
+            className={`${inputClass} resize-y`}
           />
         </div>
       </div>
 
-      <label className="flex items-start gap-3 text-sm text-ink-soft">
+      <label className="flex items-start gap-3 text-[14px] leading-relaxed text-ink-soft">
         <input
           type="checkbox"
           name="consent"
           required
-          className="mt-0.5 h-4 w-4 shrink-0 accent-[#b04e28]"
+          className="mt-1 h-4 w-4 shrink-0 accent-[#1f3fff]"
         />
         <span>
           개인정보 수집·이용에 동의합니다. 수집된 정보는 문의 응대 목적으로만
           사용됩니다.{" "}
-          <a href="/privacy" className="underline hover:text-accent">
+          <a href="/privacy" className="underline underline-offset-2 hover:text-accent">
             개인정보처리방침 보기
           </a>
         </span>
@@ -233,20 +234,23 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="border border-ink bg-ink px-8 py-4 text-sm font-medium text-paper transition-colors hover:bg-transparent hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+          className="group inline-flex items-center gap-3 rounded-full bg-accent px-10 py-4.5 text-base font-semibold text-white transition-colors hover:bg-accent-deep disabled:cursor-not-allowed disabled:opacity-50"
         >
           {status === "sending" ? "전송 중…" : "문의 보내기"}
+          <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+            →
+          </span>
         </button>
       </div>
 
       <div aria-live="polite">
         {status === "success" && (
-          <p className="border border-line bg-paper-deep/60 px-5 py-4 text-sm">
+          <p className="border-l-2 border-accent bg-paper-deep/60 px-6 py-5 text-[15px]">
             문의가 접수되었습니다. 확인 후 빠르게 연락드리겠습니다.
           </p>
         )}
         {status === "mailto" && (
-          <p className="border border-line bg-paper-deep/60 px-5 py-4 text-sm leading-relaxed">
+          <p className="border-l-2 border-accent bg-paper-deep/60 px-6 py-5 text-[15px] leading-relaxed">
             메일 작성 화면이 열렸습니다. 열리지 않는 경우{" "}
             <strong>{site.contact.email}</strong> 로 직접 보내 주세요.
             <br />
@@ -257,7 +261,7 @@ export default function ContactForm({ defaultType }: { defaultType?: string }) {
           </p>
         )}
         {status === "error" && (
-          <p className="border border-accent/40 bg-paper-deep/60 px-5 py-4 text-sm text-accent-deep">
+          <p className="border-l-2 border-accent bg-paper-deep/60 px-6 py-5 text-[15px] text-accent-deep">
             {errorMessage}
           </p>
         )}

@@ -30,59 +30,77 @@ export default async function ServiceDetailPage({ params }: Props) {
   const next = services[(index + 1) % services.length];
 
   const blocks = [
-    { title: "해결하는 문제", items: service.problems, numbered: false },
-    { title: "수행 범위", items: service.scope, numbered: false },
-    { title: "진행 방식", items: service.process, numbered: true },
-    { title: "주요 산출물", items: service.deliverables, numbered: false },
+    { key: "A", title: "해결하는 문제", items: service.problems, numbered: false },
+    { key: "B", title: "수행 범위", items: service.scope, numbered: false },
+    { key: "C", title: "진행 방식", items: service.process, numbered: true },
+    { key: "D", title: "주요 산출물", items: service.deliverables, numbered: false },
   ];
 
   return (
     <>
-      <section className="border-b border-line">
-        <div className="container-k py-16 md:py-24">
-          <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-              Service {service.number}
-            </p>
-            <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.15] md:text-5xl">
-              {service.title}
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink-soft md:text-lg">
-              {service.short}
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
       <section>
-        <div className="container-k py-16 md:py-24">
-          <div className="space-y-16 md:space-y-20">
+        <div className="container-k grid gap-14 py-20 md:py-28 lg:grid-cols-12">
+          {/* 좌측 스티키 헤더 */}
+          <div className="lg:col-span-5">
+            <div className="lg:sticky lg:top-32">
+              <Reveal className="reveal-mask">
+                <p className="overline-k">
+                  <span className="text-accent">Service {service.number}</span>
+                </p>
+                <h1 className="display-2 mt-6">
+                  <span className="mask-line">
+                    <span>{service.title}</span>
+                  </span>
+                </h1>
+              </Reveal>
+              <Reveal delay={150}>
+                <p className="mt-7 max-w-md text-[17px] leading-[1.8] text-ink-soft">
+                  {service.short}
+                </p>
+                <Link
+                  href={`/contact?type=${encodeURIComponent("프로젝트 문의")}`}
+                  className="group mt-10 inline-flex items-center gap-3 rounded-full bg-accent px-8 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-accent-deep"
+                >
+                  이 서비스 문의하기
+                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+                    →
+                  </span>
+                </Link>
+              </Reveal>
+            </div>
+          </div>
+
+          {/* 우측 콘텐츠 블록 */}
+          <div className="lg:col-span-6 lg:col-start-7">
             {blocks.map((block, blockIndex) => (
               <Reveal key={block.title}>
-                <div className="grid gap-6 md:grid-cols-[1fr_2.2fr] md:gap-12">
-                  <h2 className="text-xl font-bold md:text-2xl">
-                    <span className="mr-3 text-sm font-semibold text-accent">
-                      {String(blockIndex + 1).padStart(2, "0")}
+                <div
+                  className={`border-t border-line py-12 md:py-14 ${
+                    blockIndex === blocks.length - 1 ? "border-b" : ""
+                  }`}
+                >
+                  <div className="flex items-baseline gap-5">
+                    <span className="text-[13px] font-bold tracking-[0.15em] text-accent">
+                      {block.key}
                     </span>
-                    {block.title}
-                  </h2>
-                  <ul
-                    className={`divide-y divide-line border-y border-line ${
-                      block.numbered ? "" : ""
-                    }`}
-                  >
+                    <h2 className="text-2xl font-bold tracking-[-0.015em] md:text-[1.7rem]">
+                      {block.title}
+                    </h2>
+                  </div>
+                  <ul className="mt-8 space-y-5">
                     {block.items.map((item, i) => (
-                      <li key={item} className="flex items-baseline gap-4 py-4">
+                      <li key={item} className="flex items-baseline gap-5">
                         {block.numbered ? (
-                          <span className="shrink-0 text-xs font-semibold text-accent">
+                          <span className="shrink-0 text-[12px] font-bold tracking-[0.1em] text-ink-mute">
                             {String(i + 1).padStart(2, "0")}
                           </span>
                         ) : (
-                          <span aria-hidden className="shrink-0 text-accent">
-                            —
-                          </span>
+                          <span
+                            aria-hidden
+                            className="mt-2 block h-[5px] w-[5px] shrink-0 rounded-full bg-accent"
+                          />
                         )}
-                        <span className="text-sm leading-relaxed md:text-base">
+                        <span className="text-[16px] leading-[1.75] md:text-[17px]">
                           {item}
                         </span>
                       </li>
@@ -91,27 +109,27 @@ export default async function ServiceDetailPage({ params }: Props) {
                 </div>
               </Reveal>
             ))}
-          </div>
 
-          <Reveal>
-            <div className="mt-20 flex flex-col gap-4 border-t border-line pt-10 sm:flex-row sm:items-center sm:justify-between">
-              <Link
-                href={`/contact?type=${encodeURIComponent("프로젝트 문의")}`}
-                className="inline-block border border-ink bg-ink px-7 py-3.5 text-center text-sm font-medium text-paper transition-colors hover:bg-transparent hover:text-ink"
-              >
-                이 서비스 관련 프로젝트 문의하기
-              </Link>
+            <Reveal>
               <Link
                 href={`/services/${next.slug}`}
-                className="group inline-flex items-center gap-2 text-sm font-medium text-ink-soft transition-colors hover:text-accent"
+                className="group mt-12 flex items-center justify-between border border-line px-7 py-6 transition-colors hover:border-ink md:px-9 md:py-7"
               >
-                다음 서비스 — {next.title}
-                <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                <div>
+                  <p className="overline-k">Next Service</p>
+                  <p className="mt-2 text-lg font-bold tracking-[-0.01em] transition-colors group-hover:text-accent md:text-xl">
+                    {next.title}
+                  </p>
+                </div>
+                <span
+                  aria-hidden
+                  className="text-xl text-ink-mute transition-all duration-300 group-hover:translate-x-1.5 group-hover:text-accent"
+                >
                   →
                 </span>
               </Link>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
         </div>
       </section>
 

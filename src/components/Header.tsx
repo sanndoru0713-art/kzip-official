@@ -9,52 +9,54 @@ export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  // 페이지 이동 시 모바일 메뉴 닫기
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
+  // 메뉴 오픈 시 스크롤 잠금
+  useEffect(() => {
+    document.documentElement.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, [open]);
+
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  return (
-    <header className="sticky top-0 z-50 border-b border-line bg-paper/95 backdrop-blur-sm">
-      {/* 슬림 유틸리티 바 */}
-      <div className="border-b border-line bg-paper-deep/60">
-        <div className="container-k flex h-8 items-center justify-between text-[11px] tracking-widest text-ink-mute">
-          <p className="uppercase">Strategy · Content · Digital · Global</p>
-          <p className="hidden sm:block">한국어 · 日本語 · English 프로젝트 대응</p>
-        </div>
-      </div>
+  const mainNav = nav.filter((item) => item.href !== "/contact");
 
-      <div className="container-k flex h-16 items-center justify-between md:h-[72px]">
-        <Link href="/" className="text-xl font-extrabold tracking-tight md:text-2xl">
+  return (
+    <header className="sticky top-0 z-50 border-b border-line bg-paper/90 backdrop-blur-md">
+      <div className="container-k flex h-[68px] items-center justify-between md:h-20">
+        <Link
+          href="/"
+          className="text-[22px] font-extrabold tracking-[-0.02em] md:text-2xl"
+        >
           K<span className="text-accent">:</span>ZIP
         </Link>
 
         {/* 데스크톱 내비게이션 */}
-        <nav aria-label="주요 메뉴" className="hidden items-center gap-7 lg:flex">
-          {nav.map((item) =>
-            item.href === "/contact" ? (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="border border-ink px-4 py-2 text-sm font-medium transition-colors hover:bg-ink hover:text-paper"
-              >
-                {item.label}
-              </Link>
-            ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`text-sm transition-colors hover:text-accent ${
-                  isActive(item.href) ? "font-semibold text-accent" : "text-ink-soft"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ),
-          )}
+        <nav aria-label="주요 메뉴" className="hidden items-center gap-9 lg:flex">
+          {mainNav.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`link-slide text-[15px] transition-colors ${
+                isActive(item.href)
+                  ? "font-semibold text-ink"
+                  : "text-ink-soft hover:text-ink"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            href="/contact"
+            className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-deep"
+          >
+            문의하기
+          </Link>
         </nav>
 
         {/* 모바일 메뉴 버튼 */}
@@ -64,41 +66,55 @@ export default function Header() {
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] lg:hidden"
+          className="relative z-[70] flex h-10 w-10 flex-col items-center justify-center gap-[6px] lg:hidden"
         >
           <span
-            className={`h-[1.5px] w-5 bg-ink transition-transform ${open ? "translate-y-[6.5px] rotate-45" : ""}`}
+            className={`h-[1.5px] w-6 bg-ink transition-transform duration-300 ${open ? "translate-y-[7.5px] rotate-45" : ""}`}
           />
-          <span className={`h-[1.5px] w-5 bg-ink transition-opacity ${open ? "opacity-0" : ""}`} />
           <span
-            className={`h-[1.5px] w-5 bg-ink transition-transform ${open ? "-translate-y-[6.5px] -rotate-45" : ""}`}
+            className={`h-[1.5px] w-6 bg-ink transition-opacity duration-300 ${open ? "opacity-0" : ""}`}
+          />
+          <span
+            className={`h-[1.5px] w-6 bg-ink transition-transform duration-300 ${open ? "-translate-y-[7.5px] -rotate-45" : ""}`}
           />
         </button>
       </div>
 
-      {/* 모바일 메뉴 */}
-      {open && (
+      {/* 모바일 풀스크린 메뉴 */}
+      <div
+        id="mobile-menu"
+        className={`fixed inset-0 z-[60] bg-paper transition-opacity duration-300 lg:hidden ${
+          open ? "visible opacity-100" : "invisible opacity-0"
+        }`}
+      >
         <nav
-          id="mobile-menu"
           aria-label="모바일 메뉴"
-          className="border-t border-line bg-paper lg:hidden"
+          className="container-k flex h-full flex-col justify-center"
         >
-          <ul className="container-k divide-y divide-line py-2">
-            {nav.map((item) => (
-              <li key={item.href}>
+          <ul className="space-y-2">
+            {nav.map((item, i) => (
+              <li
+                key={item.href}
+                className="overflow-hidden"
+              >
                 <Link
                   href={item.href}
-                  className={`block py-4 text-base ${
-                    isActive(item.href) ? "font-semibold text-accent" : "text-ink"
-                  }`}
+                  onClick={() => setOpen(false)}
+                  className={`block text-4xl font-extrabold tracking-[-0.02em] transition-all duration-500 ${
+                    open ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                  } ${isActive(item.href) ? "text-accent" : "text-ink"}`}
+                  style={{ transitionDelay: open ? `${80 + i * 50}ms` : "0ms" }}
                 >
                   {item.label}
                 </Link>
               </li>
             ))}
           </ul>
+          <p className="overline-k mt-14">
+            Strategy · Content · Digital · Global
+          </p>
         </nav>
-      )}
+      </div>
     </header>
   );
 }
