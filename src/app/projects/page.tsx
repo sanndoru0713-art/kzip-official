@@ -126,9 +126,8 @@ export default async function ProjectsPage() {
 
           <Reveal>
             <p className="mt-24 border-t border-line pt-8 text-[13px] leading-relaxed text-ink-mute">
-              이 페이지의 프로젝트는 구조 확인용 자리표시자입니다. 실제 실적이
-              확정되면 <code className="text-xs">src/data/projects.ts</code>에서
-              내용과 이미지를 교체하세요.
+              일부 프로젝트는 고객사와의 협의에 따라 공개 범위가 확정되는 대로
+              상세 내용과 이미지가 순차적으로 업데이트됩니다.
             </p>
           </Reveal>
         </div>

@@ -78,10 +78,9 @@ export default async function InsightDetailPage({ params }: Props) {
               </div>
             ) : (
               <div className="mx-auto max-w-2xl border-l-2 border-accent bg-paper-deep/60 px-8 py-12 text-[15px] leading-[1.8] text-ink-mute">
-                [본문 준비 중]
+                이 글의 전체 내용은 현재 준비 중입니다.
                 <br />
-                이 글의 전체 내용은 준비되는 대로 공개됩니다. Notion의 K:ZIP
-                인사이트에서 해당 글을 열어 페이지 본문에 원고를 작성하세요.
+                검증을 마친 원고가 준비되는 대로 이곳에 공개됩니다.
               </div>
             )}
           </Reveal>

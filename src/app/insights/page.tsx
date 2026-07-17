@@ -163,8 +163,7 @@ export default async function InsightsPage({ searchParams }: Props) {
 
           <Reveal>
             <p className="mt-20 text-[13px] leading-relaxed text-ink-mute">
-              새 글은 Notion의 K:ZIP 인사이트에 추가하고 공개 여부를 체크하면
-              약 5분 내에 목록과 상세 페이지에 자동 반영됩니다.
+              K:ZIP의 새로운 인사이트가 이곳에 계속 업데이트됩니다.
             </p>
           </Reveal>
         </div>
