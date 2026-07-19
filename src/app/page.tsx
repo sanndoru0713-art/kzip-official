@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import Parallax from "@/components/Parallax";
@@ -8,10 +9,19 @@ import CmsImage from "@/components/CmsImage";
 import GlobalTimeline from "@/components/home/GlobalTimeline";
 import ProcessSteps from "@/components/home/ProcessSteps";
 import { homeServices } from "@/data/services";
+import { site } from "@/data/site";
 import { getInsights, getProjects, getSiteInfo } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
 
 // Notion CMS 수정 사항이 최대 5분 내 반영되도록 ISR 적용
 export const revalidate = 300;
+
+export const metadata: Metadata = pageMetadata({
+  title: `${site.name} — 전략을 설계하고, 성장을 실행합니다`,
+  absoluteTitle: true,
+  description: site.description,
+  path: "/",
+});
 
 const globalCapabilities = [
   "일본 시장 및 고객 분석",

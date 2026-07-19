@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getInsights(),
   ]);
 
+  // /privacy는 noindex 페이지이므로 sitemap에서 제외합니다.
   const staticPages = [
     "",
     "/about",
@@ -18,7 +19,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/global",
     "/insights",
     "/contact",
-    "/privacy",
   ].map((path) => ({
     url: `${base}${path}`,
     changeFrequency: "monthly" as const,

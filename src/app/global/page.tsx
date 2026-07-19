@@ -6,12 +6,16 @@ import Parallax from "@/components/Parallax";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import CTABand from "@/components/CTABand";
 import GlobalPageTimeline from "@/components/GlobalPageTimeline";
+import JsonLd from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/schema";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "일본·글로벌",
   description:
     "K:ZIP의 일본어 역량은 번역 서비스가 아니라 시장 전략과 사업개발 역량입니다. 일본 시장 전략, 로컬라이제이션, SNS 운영, 플랫폼 입점, 글로벌 파트너 커뮤니케이션을 소개합니다.",
-};
+  path: "/global",
+});
 
 const japanCapabilities = [
   {
@@ -73,6 +77,7 @@ const japanCapabilities = [
 export default function GlobalPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema([{ name: "일본·글로벌", path: "/global" }])} />
       <PageHero
         overline="Japan · Global"
         titleLines={["언어가 아니라,", "시장을 현지화합니다"]}

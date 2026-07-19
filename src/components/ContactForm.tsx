@@ -2,6 +2,7 @@
 
 import { useRef, useState, type FormEvent } from "react";
 import { site } from "@/data/site";
+import { trackEvent } from "@/lib/analytics";
 
 export const inquiryTypes = [
   "프로젝트 문의",
@@ -67,6 +68,8 @@ export default function ContactForm({
 
       if (res.ok) {
         setStatus("success");
+        // 개인정보 미포함 — 문의 유형만 전송합니다.
+        trackEvent("contact_submit", { inquiry_type: payload.type });
         form.reset();
         return;
       }
@@ -89,11 +92,13 @@ export default function ContactForm({
           subject,
         )}&body=${encodeURIComponent(bodyText)}`;
         setStatus("mailto");
+        trackEvent("contact_mailto_fallback");
         return;
       }
 
       const { error } = (await res.json().catch(() => ({}))) as { error?: string };
       setStatus("error");
+      trackEvent("contact_submit_error", { reason: error ?? "unknown" });
       setErrorMessage(
         error === "invalid_email"
           ? "이메일 형식을 확인해 주세요."

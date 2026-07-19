@@ -4,14 +4,18 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import CTABand from "@/components/CTABand";
 import { getServices } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, itemListSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "서비스",
   description:
     "전략 기획, 디지털 마케팅, 브랜드 콘텐츠, 일본·글로벌 마케팅, 프로젝트 매니지먼트까지 — K:ZIP의 12개 서비스 영역을 소개합니다.",
-};
+  path: "/services",
+});
 
 /** 매거진 목차 — 행마다 들여쓰기 리듬을 다르게 */
 const indentPattern = ["", "lg:pl-24", "lg:pl-48", "lg:pl-24"];
@@ -20,6 +24,13 @@ export default async function ServicesPage() {
   const services = await getServices();
   return (
     <>
+      <JsonLd data={breadcrumbSchema([{ name: "서비스", path: "/services" }])} />
+      <JsonLd
+        data={itemListSchema(
+          "K:ZIP 서비스",
+          services.map((s) => ({ name: s.title, path: `/services/${s.slug}` })),
+        )}
+      />
       <PageHero
         overline="Services"
         titleLines={["전략에서 실행까지,", "12개의 서비스 영역"]}

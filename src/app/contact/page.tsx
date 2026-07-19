@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import ContactForm from "@/components/ContactForm";
 import { getSiteInfo } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+// 문의 유형 프리셋(?type=)이 있어도 canonical은 /contact로 고정합니다.
+export const metadata: Metadata = pageMetadata({
   title: "문의하기",
   description:
     "새로운 프로젝트를 준비하고 계신가요? 목표와 현재 고민을 알려주시면 K:ZIP가 필요한 전략과 실행 방식을 함께 설계합니다.",
-};
+  path: "/contact",
+});
 
 type Props = { searchParams: Promise<{ type?: string }> };
 

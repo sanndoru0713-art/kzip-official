@@ -167,7 +167,8 @@ CRM에서 운영자는 상태(신규 문의→확인 중→회신 완료→…�
 | `/contact` | 문의 폼 | CRM DB (저장) |
 | `/privacy` | 개인정보처리방침 | 정적 |
 
-SEO: 페이지별 메타데이터, OG 이미지 자동 생성, sitemap.xml(CMS 슬러그 반영), robots.txt, 404.
+SEO/GEO: 페이지별 메타데이터·canonical, OG 이미지 자동 생성, JSON-LD 구조화 데이터(Organization·WebSite·Breadcrumb·Article 등), sitemap.xml(CMS 슬러그 반영), robots.txt, llms.txt, 404, 분석 도구(GA4/GTM)·검색엔진 소유 확인 env 게이트.
+자세한 구조와 운영 방법은 **[docs/seo-geo.md](docs/seo-geo.md)** 를 참고하세요.
 
 ## 8. 배포 전 확인 목록
 

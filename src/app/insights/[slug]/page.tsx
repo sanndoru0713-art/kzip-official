@@ -5,6 +5,9 @@ import Reveal from "@/components/Reveal";
 import CTABand from "@/components/CTABand";
 import { insights as localInsights } from "@/data/insights";
 import { getInsightBody, getInsightBySlug, getInsights } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
+import { articleSchema, breadcrumbSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const revalidate = 300;
 
@@ -19,10 +22,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await getInsightBySlug(slug);
   if (!post) return {};
-  return {
+  return pageMetadata({
     title: `${post.title} | 인사이트`,
     description: post.summary,
-  };
+    path: `/insights/${post.slug}`,
+    ogType: "article",
+    publishedTime: post.date,
+  });
 }
 
 export default async function InsightDetailPage({ params }: Props) {
@@ -36,6 +42,21 @@ export default async function InsightDetailPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "인사이트", path: "/insights" },
+          { name: post.title, path: `/insights/${post.slug}` },
+        ])}
+      />
+      <JsonLd
+        data={articleSchema({
+          title: post.title,
+          description: post.summary,
+          path: `/insights/${post.slug}`,
+          datePublished: post.date,
+          category: post.category,
+        })}
+      />
       <article>
         {/* 아티클 헤더 — 중앙 정렬 */}
         <header className="border-b border-line">

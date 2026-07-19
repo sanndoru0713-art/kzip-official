@@ -5,6 +5,9 @@ import Reveal from "@/components/Reveal";
 import CTABand from "@/components/CTABand";
 import { services as localServices } from "@/data/services";
 import { getServiceBySlug, getServices } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, serviceSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const revalidate = 300;
 
@@ -19,10 +22,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
   if (!service) return {};
-  return {
+  return pageMetadata({
     title: `${service.title} | 서비스`,
     description: service.short,
-  };
+    path: `/services/${service.slug}`,
+  });
 }
 
 export default async function ServiceDetailPage({ params }: Props) {
@@ -43,6 +47,19 @@ export default async function ServiceDetailPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "서비스", path: "/services" },
+          { name: service.title, path: `/services/${service.slug}` },
+        ])}
+      />
+      <JsonLd
+        data={serviceSchema({
+          name: service.title,
+          description: service.short,
+          path: `/services/${service.slug}`,
+        })}
+      />
       <section>
         <div className="container-k grid gap-14 py-20 md:py-28 lg:grid-cols-12">
           {/* 좌측 스티키 헤더 */}

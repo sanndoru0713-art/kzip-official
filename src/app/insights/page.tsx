@@ -6,12 +6,18 @@ import CmsImage from "@/components/CmsImage";
 import CTABand from "@/components/CTABand";
 import { insightCategories } from "@/data/insights";
 import { getInsights } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, itemListSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
-export const metadata: Metadata = {
+// 카테고리 필터(?category=)가 있어도 canonical은 /insights로 고정 —
+// 필터 조합 URL이 중복 콘텐츠로 수집되는 것을 방지합니다.
+export const metadata: Metadata = pageMetadata({
   title: "인사이트",
   description:
     "전략, 디지털 마케팅, 일본 시장, 글로벌 비즈니스, 데이터·AI — 시장과 실행에 대한 K:ZIP의 관점을 기록합니다.",
-};
+  path: "/insights",
+});
 
 type Props = { searchParams: Promise<{ category?: string }> };
 
@@ -26,6 +32,13 @@ export default async function InsightsPage({ searchParams }: Props) {
 
   return (
     <>
+      <JsonLd data={breadcrumbSchema([{ name: "인사이트", path: "/insights" }])} />
+      <JsonLd
+        data={itemListSchema(
+          "K:ZIP 인사이트",
+          insights.map((p) => ({ name: p.title, path: `/insights/${p.slug}` })),
+        )}
+      />
       <PageHero
         overline="Insights"
         titleLines={["시장과 실행에", "대한 관점"]}

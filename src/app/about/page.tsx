@@ -7,14 +7,16 @@ import CmsImage from "@/components/CmsImage";
 import CTABand from "@/components/CTABand";
 import { site } from "@/data/site";
 import { getCeoProfile, getSiteInfo } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "회사소개",
   description:
     "K:ZIP는 전략 중심의 디지털 마케팅 및 글로벌 프로젝트 수행 기업입니다. 비전, 미션, 핵심가치와 일하는 방식을 소개합니다.",
-};
+  path: "/about",
+});
 
 const coreValues = [
   {

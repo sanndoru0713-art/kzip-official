@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import { site } from "@/data/site";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "개인정보처리방침",
   description: "K:ZIP 개인정보처리방침",
-  robots: { index: false },
-};
+  path: "/privacy",
+  noindex: true,
+});
 
 const sections = [
   {

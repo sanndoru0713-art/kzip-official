@@ -7,14 +7,18 @@ import { type PlaceholderKind } from "@/components/PlaceholderImage";
 import CmsImage from "@/components/CmsImage";
 import CTABand from "@/components/CTABand";
 import { getProjects } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, itemListSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "프로젝트",
   description:
     "K:ZIP가 수행한 전략, 디지털 마케팅, 일본·글로벌 프로젝트를 소개합니다. 공개 가능한 시점에 실제 이미지와 성과로 업데이트됩니다.",
-};
+  path: "/projects",
+});
 
 const caseKinds: PlaceholderKind[] = ["global", "strategy", "meeting", "office"];
 
@@ -24,6 +28,13 @@ export default async function ProjectsPage() {
 
   return (
     <>
+      <JsonLd data={breadcrumbSchema([{ name: "프로젝트", path: "/projects" }])} />
+      <JsonLd
+        data={itemListSchema(
+          "K:ZIP 프로젝트",
+          projects.map((p) => ({ name: p.title, path: `/projects/${p.slug}` })),
+        )}
+      />
       <PageHero
         overline="Projects"
         titleLines={["전략이 실행으로", "옮겨진 기록"]}

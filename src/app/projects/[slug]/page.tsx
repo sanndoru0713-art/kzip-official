@@ -9,6 +9,9 @@ import CTABand from "@/components/CTABand";
 import { projects as localProjects } from "@/data/projects";
 import { getService } from "@/data/services";
 import { getProjectBySlug } from "@/lib/notion/queries";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 
 export const revalidate = 300;
 
@@ -23,10 +26,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) return {};
-  return {
+  return pageMetadata({
     title: `${project.title} | 프로젝트`,
     description: project.summary,
-  };
+    path: `/projects/${project.slug}`,
+  });
 }
 
 export default async function ProjectDetailPage({ params }: Props) {
@@ -46,6 +50,12 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "프로젝트", path: "/projects" },
+          { name: project.title, path: `/projects/${project.slug}` },
+        ])}
+      />
       {/* 타이틀 */}
       <section className="border-b border-line">
         <div className="container-k pb-14 pt-20 md:pb-20 md:pt-32">
