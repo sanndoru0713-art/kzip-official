@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ChromeGate from "@/components/ChromeGate";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -54,11 +55,15 @@ export default function RootLayout({
         >
           본문으로 건너뛰기
         </a>
-        <Header />
+        <ChromeGate>
+          <Header />
+        </ChromeGate>
         <main id="main" className="flex-1">
           {children}
         </main>
-        <Footer />
+        <ChromeGate>
+          <Footer />
+        </ChromeGate>
       </body>
     </html>
   );
