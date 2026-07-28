@@ -194,3 +194,53 @@ src/
 
 - 디자인 시스템: 화이트 `#FFFFFF` / 텍스트 `#111827` / 보조 `#6B7280` / 보더 `#ECECEC` / 포인트 `#1F3FFF`(10% 이하)
 - 인터랙션: 마스크 리빌·클립 리빌·패럴랙스·스크롤 스파이·헤더 축소 — `prefers-reduced-motion` 지원
+
+---
+
+## 10. K:ZIP Search Lab — SEO·AEO·GEO·보안 대시보드 (`/dashboard`)
+
+내부 운영용 검색 경쟁력 분석 도구. **실제 크롤링·API 데이터로만 점수를 산출**하며, 미연결 항목은 임의 수치 대신 "데이터 미연결 / 측정 불가"로 표시한다.
+
+### 핵심 원칙 (코드로 강제)
+- 임의/랜덤 점수 금지 — 측정된 검사만 가중 평균에 포함, 측정 불가 항목은 **0점 처리하지 않고 제외**
+- 모든 점수에 산출 근거(evidence) 동반, 종합점수 산식·가중치 공개
+- 미달(0~69)·양호(70~89)·최적(90~100) 3단계 + 상태별 카드/배지/색상
+- 미달·양호 항목은 개선센터에 자동 등록 (효과순 정렬)
+- 사이트 유형(일반·병원·관광)별 평가 기준·가중치 차등 적용
+- 경쟁사도 내 사이트와 동일 기준으로 분석, robots.txt 준수 크롤링
+
+### 구조
+```
+src/lib/seo/
+├── types.ts            # 도메인 타입 (측정 불가 = null 원칙)
+├── parse.ts            # 외부 의존성 없는 HTML 파서 (title/meta/heading/img/link/JSON-LD/패턴)
+├── checks/             # 검사 정의 + 평가 로직 (기준 출처 명시)
+│   ├── technical.ts    # 기술 SEO 28항목
+│   ├── content.ts      # 콘텐츠·AEO·신뢰도
+│   ├── geo.ts          # GEO·구조화데이터·모바일/CWV + JSON-LD 감사
+│   └── vertical.ts     # 병원·관광 전용
+├── scoring.ts          # 가중치·산식·예상 상승폭·우선순위 (결정적)
+└── storage.ts          # localStorage 영속 (→ 서버 DB 이관 가능)
+
+src/lib/security/       # 화이트햇 수동 진단 (SSL·헤더·노출·소유권·RBAC 모델)
+src/lib/server/security.ts  # 레이트리밋·SSRF 방지·입력 정제
+
+src/app/api/dashboard/  # crawl · psi · ai · security · ownership · integrations
+```
+
+### API 라우트 (전부 서버 전용, 레이트리밋·입력검증 적용)
+- `POST /api/dashboard/crawl` — robots.txt 준수 실측 크롤링
+- `POST /api/dashboard/psi` — PageSpeed Insights 프록시 (실측 CWV)
+- `POST /api/dashboard/ai` — Claude 기반 수정안 초안 (미연결 시 501 + 안내)
+- `POST /api/dashboard/security` — 수동 보안 진단 (SSL은 node:tls 실측)
+- `POST /api/dashboard/ownership` — 소유권 인증 (meta/file/DNS TXT 실검증)
+- `GET  /api/dashboard/integrations` — 연동 상태 (미연결은 그대로 표시)
+
+### 보안
+- 능동 공격(로그인 시도·인증 우회·포트스캔·부하 등) **미수행** — 수동 점검만
+- 민감파일 노출 등 확장 점검은 **소유권 인증 후에만** 활성화
+- 경쟁사·외부 사이트는 공개 정보만 분석
+- 앱 자체 보안 헤더는 `next.config.ts`에서 실제 적용 (HSTS·X-Frame-Options 등)
+- API Key는 서버 환경변수에만 저장, 프론트 비노출, AI 프롬프트에 미포함
+
+환경변수는 `.env.example`의 "K:ZIP Search Lab" 섹션 참고. 미설정 시 데모 수치 없이 "연결 필요"로 표시된다.
